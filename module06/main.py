@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from todo_routes import todo_router
 
 app = FastAPI(title="My Todo App")
-app.include_router(todo_router)
+app.include_router(todo_router, tags=["Todos"], prefix="/todos")
 
 
 @app.get("/")
