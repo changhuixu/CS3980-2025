@@ -25,6 +25,20 @@ const postTodo = () => {
   xhr.send(JSON.stringify({ title, desc }));
 };
 
+const deleteTodo = (id) => {
+  console.log(`deleting todo ID=${id}`);
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      getTodos();
+      console.log(`deleted todo ID=${id}`);
+    }
+  };
+
+  xhr.open('DELETE', `${api}/${id}`, true);
+  xhr.send();
+};
+
 const displayTodos = (todos) => {
   const tbody = document.getElementById('todo-rows');
   tbody.innerHTML = '';
@@ -33,7 +47,9 @@ const displayTodos = (todos) => {
         <td>${x.id}</td>
         <td>${x.title}</td>
         <td>${x.desc}</td>
-        <td></td>
+        <td>
+        <button onClick="deleteTodo(${x.id})" type="button" class="btn btn-danger">Delete</button>
+        </td>
     </tr>`;
   });
   tbody.innerHTML = rows.join(' ');
