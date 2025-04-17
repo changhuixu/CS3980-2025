@@ -36,7 +36,7 @@ async def login_for_access_token(
                 access_token = create_access_token({"username": username})
                 return Token(access_token=access_token)
 
-    return HTTPException(status_code=401, detail="Invalid username or password")
+    raise HTTPException(status_code=401, detail="Invalid username or password")
 
 
 @app.get("/users/me")
