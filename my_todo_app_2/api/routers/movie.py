@@ -1,8 +1,12 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Path, HTTPException, status
+from fastapi import APIRouter, Depends, Path, HTTPException, status
 
+from auth.jwt_auth import TokenData
 from models.movie import Movie, MovieRequest
 
+from typing import Annotated
+
+from routers.user import get_user
 
 movie_router = APIRouter()
 
@@ -20,7 +24,9 @@ async def get_movies() -> list[Movie]:
 
 
 @movie_router.get("/{id}")
-async def get_movie_by_id(id: PydanticObjectId = Path(..., title="default")) -> Movie:
+async def get_movie_by_id(
+    id: PydanticObjectId, user: Annotated[TokenData, Depends(get_user)]
+) -> Movie:
     movie = await Movie.get(id)
     if movie:
         return movie

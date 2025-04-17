@@ -1,9 +1,10 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 
 from auth.jwt_auth import Token, TokenData, create_access_token, decode_jwt_token
+from models.user import User, UserRequest
 
 pwd_context = CryptContext(schemes=["bcrypt"])
 
@@ -29,7 +30,16 @@ user_router = APIRouter()
 
 
 @user_router.post("/signup")
-async def sign_up(): ...
+async def sign_up(user: UserRequest):
+    existing_user = await User.find_one(User.username == user.username)
+
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User already exists.")
+
+    hashed_pwd = hash_password.create_hash(user.password)
+    new_user = User(username=user.username, password=hashed_pwd, email=user.email)
+    await new_user.create()
+    return {"message": "User created successfully."}
 
 
 @user_router.post("/sign-in")
@@ -38,11 +48,18 @@ async def login_for_access_token(
 ) -> Token:
     ## Authenticate user by verifying the user in DB
     username = form_data.username
-    for u in in_memory_db:
-        if u["username"] == username:
-            authenticated = hash_password.verify_hash(form_data.password, u["password"])
-            if authenticated:
-                access_token = create_access_token({"username": username})
-                return Token(access_token=access_token)
+    existing_user = await User.find_one(User.username == username)
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid username or password",
+        )
 
-    return HTTPException(status_code=401, detail="Invalid username or password")
+    authenticated = hash_password.verify_hash(
+        form_data.password, existing_user.password
+    )
+    if authenticated:
+        access_token = create_access_token({"username": username})
+        return Token(access_token=access_token)
+
+    raise HTTPException(status_code=401, detail="Invalid username or password")
