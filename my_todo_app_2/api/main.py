@@ -7,6 +7,7 @@ from starlette.responses import FileResponse
 from db.db_context import init_database
 from routers.todo import todo_router
 from routers.user import user_router
+from routers.movie import movie_router
 
 
 @asynccontextmanager
@@ -36,6 +37,7 @@ async def read_index():
 
 app.include_router(todo_router, tags=["Todos"], prefix="/todos")
 app.include_router(user_router, tags=["Users"], prefix="/users")
+app.include_router(movie_router, tags=["Movies"], prefix="/movies")
 
 app.mount("/", StaticFiles(directory="../frontend"), name="static")
 

@@ -1,4 +1,5 @@
 from beanie import init_beanie
+from models.movie import Movie
 from models.my_config import get_settings
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -10,4 +11,4 @@ async def init_database():
     my_config = get_settings()
     client = AsyncIOMotorClient(my_config.connection_string)
     db = client["todo_app"]
-    await init_beanie(database=db, document_models=[User, Todo])
+    await init_beanie(database=db, document_models=[User, Todo, Movie])
