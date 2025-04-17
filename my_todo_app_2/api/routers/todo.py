@@ -4,7 +4,6 @@ from models.todo import Todo, TodoRequest
 
 todo_router = APIRouter()
 
-todo_list = []
 max_id: int = 0
 
 
@@ -25,7 +24,7 @@ async def get_todos() -> list[Todo]:
 
 @todo_router.get("/{id}")
 async def get_todo_by_id(id: int = Path(..., title="default")) -> Todo:
-    todo = Todo.get(id)
+    todo = await Todo.get(id)
     if todo:
         return todo
     raise HTTPException(
@@ -36,21 +35,18 @@ async def get_todo_by_id(id: int = Path(..., title="default")) -> Todo:
 
 @todo_router.put("/{id}")
 async def update_todo(todo: TodoRequest, id: int) -> dict:
-    for x in todo_list:
-        if x.id == id:
-            x.title = todo.title
-            x.description = todo.description
-            return {"message": "Todo updated successfully"}
+    existing_todo = await Todo.get(id)
+    if existing_todo:
+        existing_todo.title = todo.title
+        existing_todo.description = todo.description
+        await existing_todo.save()
+        return {"message": "Todo updated successfully"}
 
     return {"message": f"The todo with ID={id} is not found."}
 
 
 @todo_router.delete("/{id}")
 async def delete_todo(id: int) -> dict:
-    for i in range(len(todo_list)):
-        todo = todo_list[i]
-        if todo.id == id:
-            todo_list.pop(i)
-            return {"message": f"The todo with ID={id} has been deleted."}
-
-    return {"message": f"The todo with ID={id} is not found."}
+    todo = await Todo.get(id)
+    await todo.delete()
+    return {"message": f"The todo with ID={id} has been deleted."}
