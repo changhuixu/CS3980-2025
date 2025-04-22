@@ -44,7 +44,11 @@ export class AdminComponent implements OnInit {
     });
   }
 
-  updateRole(id: string) {
-    this.usersSvc.updateUserRole(id).subscribe();
+  updateRole(item: UserDto) {
+    this.usersSvc
+      .updateUserRole(item.id)
+      .subscribe((x: { newRole: string }) => {
+        item.role = x.newRole;
+      });
   }
 }

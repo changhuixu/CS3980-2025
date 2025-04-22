@@ -7,9 +7,9 @@ export function jwtInterceptor(
   request: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> {
-  const authService = inject(UsersService);
+  const usersSvc = inject(UsersService);
   // add JWT auth header if a user is logged in for API requests
-  const accessToken = authService.user.access_token;
+  const accessToken = usersSvc.getToken();
   if (accessToken) {
     request = request.clone({
       setHeaders: { Authorization: `Bearer ${accessToken}` },

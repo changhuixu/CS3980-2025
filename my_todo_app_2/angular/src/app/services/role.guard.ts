@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
+import { map } from 'rxjs';
 import { UsersService } from './users.service';
 
 export const roleGuard: CanMatchFn = (route: Route, _: UrlSegment[]) => {
@@ -10,13 +11,16 @@ export const roleGuard: CanMatchFn = (route: Route, _: UrlSegment[]) => {
 
   const returnUrl = navigation?.extractedUrl.toString() || '/';
   const allowedRoles = ((route.data || {})['roles'] || []) as Array<string>;
-  const user = usersSvc.user;
-  if (user && allowedRoles.includes(user.role)) {
-    return true;
-  } else {
-    router.navigate(['login'], {
-      queryParams: { returnUrl },
-    });
-    return false;
-  }
+  return usersSvc.user$.pipe(
+    map((user) => {
+      if (user && allowedRoles.includes(user.role)) {
+        return true;
+      } else {
+        router.navigate(['login'], {
+          queryParams: { returnUrl },
+        });
+        return false;
+      }
+    })
+  );
 };

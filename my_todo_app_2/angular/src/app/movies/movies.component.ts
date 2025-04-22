@@ -28,7 +28,7 @@ export class MoviesComponent implements OnInit {
     private readonly svc: MoviesService,
     private modalService: NgbModal
   ) {
-    this.username = usersSvc.user.username;
+    usersSvc.user$.subscribe((u) => (this.username = u.username));
   }
 
   ngOnInit(): void {

@@ -117,7 +117,7 @@ async def update_user_role(
 
     if affected_user.role == "BasicUser":
         affected_user.role = "AdminUser"
-    if affected_user.role == "AdminUser":
+    else:
         affected_user.role = "BasicUser"
     await affected_user.save()
-    return {"message": "User role updated."}
+    return {"newRole": affected_user.role}

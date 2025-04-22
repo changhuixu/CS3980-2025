@@ -39,7 +39,6 @@
         <th>UserName</th>
         <th>Email</th>
         <th>Role</th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -48,14 +47,12 @@
         <td class="align-middle">{{ item.id }}</td>
         <td class="align-middle">{{ item.username }}</td>
         <td class="align-middle">{{ item.email }}</td>
-        <td class="align-middle">{{ item.role }}</td>
-        <td>
-          <button
-            type="button"
-            class="btn btn-link text-danger"
-            (click)="delete(item.id, errorDialog)"
-          >
-            Delete
+        <td class="align-middle d-flex align-items-center">
+          <span>
+            {{ item.role }}
+          </span>
+          <button type="button" class="btn btn-link" (click)="updateRole(item)">
+            Update
           </button>
         </td>
       </tr>

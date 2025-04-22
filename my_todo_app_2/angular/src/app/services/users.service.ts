@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable } from 'rxjs';
 import { api } from './constants';
 
 export interface LoginResult {
@@ -41,23 +41,30 @@ export class UsersService {
     return this.http.post<LoginResult>(this.url + '/sign-in', formData).pipe(
       map((x) => {
         localStorage.setItem('user', JSON.stringify(x));
+        this._user.next(x);
         return x;
       })
     );
   }
   logout() {
-    localStorage.setItem('user', this._defaultUser);
+    localStorage.setItem('user', JSON.stringify(this._defaultUser));
+    this._user.next(this._defaultUser);
     this.router.navigate(['login']);
   }
 
-  get user(): LoginResult {
-    const u = localStorage.getItem('user') || this._defaultUser;
-    return JSON.parse(u);
+  private readonly _defaultUser: LoginResult = {
+    username: '',
+    role: '',
+    access_token: '',
+    token_type: '',
+  };
+  private _user = new BehaviorSubject<LoginResult>(this._defaultUser);
+  user$: Observable<LoginResult> = this._user.asObservable();
+
+  getToken(): string {
+    const user = localStorage.getItem('user') || '';
+    return JSON.parse(user).access_token;
   }
-
-  private readonly _defaultUser: string =
-    '{"username":"","role":"","access_token":"","token_type":""}';
-
   getAllUsers(): Observable<UserDto[]> {
     return this.http.get<UserDto[]>(this.url);
   }
