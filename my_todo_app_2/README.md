@@ -14,6 +14,11 @@ $ openssl rand -hex 32
 
 ```
 
+```powershell
+ng new angular --minimal -s=false -t=false --skip-tests --style=css --ssr=false
+
+```
+
 ## 1. Python virtual environment
 
 ```powershell

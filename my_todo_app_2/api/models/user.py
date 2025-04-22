@@ -6,6 +6,7 @@ class User(Document):
     username: str
     email: str
     password: str  # hash & salted password in the database
+    role: str = ""
 
     class Settings:
         name = "users"

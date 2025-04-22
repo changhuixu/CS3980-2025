@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class Movie(Document):
     title: str
     year: int
+    created_by: str
 
     class Settings:
         name = "movies"
