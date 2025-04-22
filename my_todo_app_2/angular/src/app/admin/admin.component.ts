@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { Movie, MoviesService } from '../services/movies.service';
+import { UserDto, UsersService } from '../services/users.service';
 
 @Component({
   selector: 'app-admin',
@@ -12,15 +13,21 @@ export class AdminComponent implements OnInit {
   movies: Movie[] = [];
   busy = false;
   errorMsg = '';
+  users: UserDto[] = [];
 
   private modalRef?: NgbModalRef;
   constructor(
     private readonly svc: MoviesService,
+    private usersSvc: UsersService,
     private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     this.svc.getAllMovies().subscribe((x) => (this.movies = x));
+    this.usersSvc.getAllUsers().subscribe((x) => {
+      this.users = x;
+      console.log(x);
+    });
   }
 
   delete(id: string, content: any) {
@@ -35,5 +42,9 @@ export class AdminComponent implements OnInit {
         });
       },
     });
+  }
+
+  updateRole(id: string) {
+    this.usersSvc.updateUserRole(id).subscribe();
   }
 }

@@ -11,6 +11,13 @@ export interface LoginResult {
   token_type: string;
 }
 
+export interface UserDto {
+  id: string;
+  username: string;
+  role: string;
+  email: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -50,4 +57,12 @@ export class UsersService {
 
   private readonly _defaultUser: string =
     '{"username":"","role":"","access_token":"","token_type":""}';
+
+  getAllUsers(): Observable<UserDto[]> {
+    return this.http.get<UserDto[]>(this.url);
+  }
+
+  updateUserRole(id: string): Observable<any> {
+    return this.http.post<any>(this.url + '/' + id, {});
+  }
 }

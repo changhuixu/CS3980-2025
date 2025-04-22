@@ -28,6 +28,40 @@
       </tbody>
     </table>
   </div>
+
+  <br />
+  <hr />
+  <h2>Users</h2>
+  <table class="table table-striped table-hover table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>UserName</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(item of users; track item.id){
+      <tr>
+        <td class="align-middle">{{ item.id }}</td>
+        <td class="align-middle">{{ item.username }}</td>
+        <td class="align-middle">{{ item.email }}</td>
+        <td class="align-middle">{{ item.role }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-link text-danger"
+            (click)="delete(item.id, errorDialog)"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
 </div>
 
 <ng-template #errorDialog let-modal>
