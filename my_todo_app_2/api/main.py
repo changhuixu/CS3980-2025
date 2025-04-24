@@ -30,15 +30,9 @@ app.add_middleware(
 )
 
 
-@app.get("/")
-async def read_index():
-    return FileResponse("../frontend/index.html")
-
-
 app.include_router(todo_router, tags=["Todos"], prefix="/todos")
 app.include_router(user_router, tags=["Users"], prefix="/users")
 app.include_router(movie_router, tags=["Movies"], prefix="/movies")
 
-app.mount("/", StaticFiles(directory="../frontend"), name="static")
 
 # uvicorn.run(app, host="localhost", port=8000)

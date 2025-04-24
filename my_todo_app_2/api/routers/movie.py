@@ -6,6 +6,7 @@ from models.movie import Movie, MovieRequest
 
 from typing import Annotated
 
+from models.user import ensure_admin_role
 from routers.user import get_user
 
 movie_router = APIRouter()
@@ -22,16 +23,7 @@ async def add_new_movie(
 
 @movie_router.get("")
 async def get_all_movies(user: Annotated[TokenData, Depends(get_user)]) -> list[Movie]:
-    if not user or not user.username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Please login.",
-        )
-    if user.role != "AdminUser":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"You don't have enough permissions for this action.",
-        )
+    ensure_admin_role(user)
     return await Movie.find_all().to_list()
 
 
@@ -62,11 +54,7 @@ async def get_movie_by_id(
 async def delete_movie_by_id(
     id: PydanticObjectId, user: Annotated[TokenData, Depends(get_user)]
 ) -> dict:
-    if not user or not user.role or user.role != "AdminUser":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"You don't have permissions to delete this movie.",
-        )
+    ensure_admin_role(user)
     movie = await Movie.get(id)
     if movie:
         await movie.delete()

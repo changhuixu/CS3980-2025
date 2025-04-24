@@ -11,7 +11,7 @@ from auth.jwt_auth import (
     create_access_token,
     decode_jwt_token,
 )
-from models.user import User, UserDto, UserRequest
+from models.user import User, UserDto, UserRequest, ensure_admin_role
 
 pwd_context = CryptContext(schemes=["bcrypt"])
 
@@ -24,7 +24,7 @@ class HashPassword:
         return pwd_context.verify(input_password, hashed_password)
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/sign-in")
 hash_password = HashPassword()
 
 
@@ -76,16 +76,7 @@ async def login_for_access_token(
 
 @user_router.get("")
 async def get_all_users(user: Annotated[TokenData, Depends(get_user)]) -> list[UserDto]:
-    if not user or not user.username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Please login.",
-        )
-    if user.role != "AdminUser":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"You don't have enough permissions for this action.",
-        )
+    ensure_admin_role(user)
     users = await User.find_all().to_list()
     result = []
     for u in users:
@@ -99,17 +90,7 @@ async def get_all_users(user: Annotated[TokenData, Depends(get_user)]) -> list[U
 async def update_user_role(
     id: PydanticObjectId, user: Annotated[TokenData, Depends(get_user)]
 ) -> dict:
-    if not user or not user.username:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Please login.",
-        )
-    if user.role != "AdminUser":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"You don't have enough permissions for this action.",
-        )
-
+    ensure_admin_role(user)
     affected_user = await User.get(id)
     if not affected_user:
         raise HTTPException(
