@@ -26,7 +26,6 @@ export class AdminComponent implements OnInit {
     this.svc.getAllMovies().subscribe((x) => (this.movies = x));
     this.usersSvc.getAllUsers().subscribe((x) => {
       this.users = x;
-      console.log(x);
     });
   }
 

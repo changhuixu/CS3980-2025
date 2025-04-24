@@ -4,7 +4,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from passlib.context import CryptContext
 
-from auth.jwt_auth import LoginResult, TokenData, create_access_token, decode_jwt_token
+from auth.jwt_auth import (
+    LoginResult,
+    Token,
+    TokenData,
+    create_access_token,
+    decode_jwt_token,
+)
 from models.user import User, UserDto, UserRequest
 
 pwd_context = CryptContext(schemes=["bcrypt"])
@@ -46,7 +52,7 @@ async def sign_up(user: UserRequest):
 @user_router.post("/sign-in")
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> LoginResult:
+) -> Token:
     ## Authenticate user by verifying the user in DB
     username = form_data.username
     existing_user = await User.find_one(User.username == username)
@@ -63,11 +69,7 @@ async def login_for_access_token(
         access_token = create_access_token(
             {"username": username, "role": existing_user.role}
         )
-        return LoginResult(
-            access_token=access_token,
-            username=existing_user.username,
-            role=existing_user.role,
-        )
+        return Token(access_token=access_token)
 
     raise HTTPException(status_code=401, detail="Invalid username or password")
 

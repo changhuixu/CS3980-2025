@@ -5,6 +5,11 @@ from pydantic import BaseModel
 from models.my_config import get_settings
 
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
 class LoginResult(BaseModel):
     username: str
     role: str
