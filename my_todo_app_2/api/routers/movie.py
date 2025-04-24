@@ -1,3 +1,4 @@
+import logging
 from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, Path, HTTPException, status
 
@@ -10,14 +11,17 @@ from models.user import ensure_admin_role
 from routers.user import get_user
 
 movie_router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @movie_router.post("", status_code=status.HTTP_201_CREATED)
 async def add_new_movie(
     r: MovieRequest, user: Annotated[TokenData, Depends(get_user)]
 ) -> Movie:
+    logger.info(f"{user.username} is trying to add a movie")
     new_movie = Movie(title=r.title, year=r.year, created_by=user.username)
     new_movie = await Movie.insert_one(new_movie)
+    logger.info("new movie added")
     return new_movie
 
 
