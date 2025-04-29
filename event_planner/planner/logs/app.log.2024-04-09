@@ -1,0 +1,20 @@
+2024-04-09 12:44:01,284 INFO main:21 Application starts up...
+2024-04-09 12:46:12,064 INFO routes.events:18 viewing 5 events
+2024-04-09 12:47:44,747 INFO routes.events:24 viewing event #657a2367c6969d7364a48489 details.
+2024-04-09 12:47:52,909 INFO routes.events:18 viewing 5 events
+2024-04-09 12:50:12,224 INFO routes.users:39 User [python-web-dev@cs.uiowa.edu] is signing in the system.
+2024-04-09 12:50:54,699 INFO routes.users:21 User [python-web-dev@uiowa.edu] is signing up.
+2024-04-09 12:50:54,898 INFO routes.users:33 	 User [python-web-dev@uiowa.edu] is created.
+2024-04-09 12:51:16,383 INFO routes.users:39 User [python-web-dev@uiowa.edu] is signing in the system.
+2024-04-09 12:51:16,560 WARN routes.users:48 	 User [python-web-dev@uiowa.edu] signed in
+2024-04-09 12:51:19,601 INFO routes.events:18 viewing 5 events
+2024-04-09 12:51:36,843 INFO routes.events:38 User [python-web-dev@uiowa.edu] is creating an event.
+2024-04-09 12:51:36,847 INFO routes.events:40 	 A new event #[66158028a5bbff00dfbef31d] created.
+2024-04-09 12:51:36,873 INFO routes.events:18 viewing 6 events
+2024-04-09 12:52:02,834 INFO routes.events:24 viewing event #66158028a5bbff00dfbef31d details.
+2024-04-09 12:52:25,113 INFO routes.events:24 viewing event #66158028a5bbff00dfbef31d details.
+2024-04-09 12:54:10,245 INFO routes.events:24 viewing event #66158028a5bbff00dfbef31d details.
+2024-04-09 12:54:16,829 INFO routes.events:18 viewing 6 events
+2024-04-09 12:54:23,442 INFO routes.events:18 viewing 6 events
+2024-04-09 13:29:22,206 INFO main:21 Application starts up...
+2024-04-09 13:35:54,517 INFO main:21 Application starts up...
